@@ -3,6 +3,9 @@ import torch
 import torch as th
 import torch.nn as nn
 
+from torch.utils.data import DataLoader
+from tutorial_dataset import MyDataset, MyDataset_val
+
 from ldm.modules.diffusionmodules.util import (
     conv_nd,
     linear,
@@ -433,3 +436,13 @@ class ControlLDM(LatentDiffusion):
             self.control_model = self.control_model.cpu()
             self.first_stage_model = self.first_stage_model.cuda()
             self.cond_stage_model = self.cond_stage_model.cuda()
+
+
+    def train_dataloader(self):
+        dataset = MyDataset('CNet_cells')  # Assume train argument specifies the split
+        return DataLoader(dataset, num_workers=0, batch_size=4, shuffle=True)
+
+    def val_dataloader(self):
+        dataset = MyDataset_val('CNet_cells')  # Assume train argument specifies the split
+        return DataLoader(dataset, num_workers=0, batch_size=4, shuffle=True)
+

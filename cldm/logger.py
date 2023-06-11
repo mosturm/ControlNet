@@ -52,6 +52,7 @@ class ImageLogger(Callback):
                 pl_module.eval()
 
             with torch.no_grad():
+                #print('Img_logger_batch',batch)
                 images = pl_module.log_images(batch, split=split, **self.log_images_kwargs)
 
             for k in images:
@@ -71,6 +72,10 @@ class ImageLogger(Callback):
     def check_frequency(self, check_idx):
         return check_idx % self.batch_freq == 0
 
-    def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+    #def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+    #    if not self.disabled:
+     #       self.log_img(pl_module, batch, batch_idx, split="train")
+
+    def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
         if not self.disabled:
-            self.log_img(pl_module, batch, batch_idx, split="train")
+            self.log_img(pl_module, batch, batch_idx, split="val")
