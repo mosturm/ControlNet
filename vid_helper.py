@@ -83,21 +83,21 @@ def connect_matching_dots(img1, img2, path, t, cells, test=False):
 def ctc_2_track(i, res_path, id_path, save_path):
      # File names
     x_img_path = os.path.join(res_path, f"{i}.png")
-    y_img_path = os.path.join(id_path, f"{i}.jpg")
-    y_img2_path = os.path.join(id_path, f"{i-1}.jpg")
+    #y_img_path = os.path.join(id_path, f"{i}.jpg")
+    #y_img2_path = os.path.join(id_path, f"{i-1}.jpg")
 
     # Load the images
     x_img = cv2.imread(x_img_path, 0)
-    y_img = cv2.imread(y_img_path, 0)
-    y_img2 = cv2.imread(y_img2_path, 0)
+    #y_img = cv2.imread(y_img_path, 0)
+    #y_img2 = cv2.imread(y_img2_path, 0)
 
     # Error checking
-    if x_img is None or y_img is None or y_img2 is None:
-        raise ValueError('One or more images could not be read')
+    #if x_img is None or y_img is None or y_img2 is None:
+    #    raise ValueError('One or more images could not be read')
 
     # Call connect_matching_dots function
      
-    out = connect_matching_coords(y_img, y_img2, id_path, i, x_img)
+    out = connect_matching_coords(x_img, x_img, id_path, i, x_img)
 
     output_file = os.path.join(save_path, f"{i}.jpg")
     cv2.imwrite(output_file, out)
@@ -176,8 +176,8 @@ def connect_matching_coords(img1, img2, path, t, cells, test=False):
             coord1 = tuple(map(int, coordinates_img1))
             coord2 = tuple(map(int, coordinates_img2))
             print('working...',coord1,coord2,value)
-            cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[0, 255, 0], thickness=2)
-            cv2.circle(output_img_lines, tuple(coord2[::-1]), 3, color=[0, 255, 0], thickness=-1)  # Filled circle
+            cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[0, 255, 0], thickness=3)
+            cv2.circle(output_img_lines, tuple(coord2[::-1]), 8, color=[0, 255, 0], thickness=-1)  # Filled circle
 
         
         except:
@@ -188,8 +188,8 @@ def connect_matching_coords(img1, img2, path, t, cells, test=False):
                 coord1 = tuple(map(int, coordinates_img1))
                 coord2 = tuple(map(int, coordinates_img2))
                     
-                cv2.line(output_img_splits, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[255, 0, 0], thickness=2)
-                cv2.circle(output_img_splits, tuple(coord2[::-1]), 3, color=[255, 0, 0], thickness=-1)  # Filled circle
+                cv2.line(output_img_splits, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[255, 0, 0], thickness=3)
+                cv2.circle(output_img_splits, tuple(coord2[::-1]), 8, color=[255, 0, 0], thickness=-1)  # Filled circle
 
        
 

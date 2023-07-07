@@ -8,12 +8,18 @@ from cldm.logger import ImageLogger
 from cldm.model import create_model, load_state_dict
 from pytorch_lightning.loggers import WandbLogger
 
+#latest_checkpoint = ModelCheckpoint(
+#    dirpath='/export/data/msturm/CNet_track_2',
+#    save_weights_only=True,  # default is False, change to True if you only want to save model weights
+#    verbose=True,
+#    save_last=True,  # if you want to ensure that the last model is always saved
+#)
 
 
 
 # Define a ModelCheckpoint callback.
 checkpoint_callback = ModelCheckpoint(
-    dirpath='/export/data/msturm/CNet_track',
+    dirpath='/export/data/msturm/CNet_track_2',
     save_weights_only=True,  # default is False, change to True if you only want to save model weights
     verbose=True,
     save_last=True,  # if you want to ensure that the last model is always saved
@@ -21,7 +27,7 @@ checkpoint_callback = ModelCheckpoint(
 
 def main():
     # Configs
-    resume_path = '/export/data/msturm/CNet/last.ckpt'
+    resume_path = '/export/data/msturm/CNet_track_2/last.ckpt' #'./models/control_sd15_ini.ckpt'
     logger_freq = 300
     learning_rate = 2e-6
     sd_locked = False

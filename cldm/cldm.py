@@ -406,6 +406,8 @@ class ControlLDM(LatentDiffusion):
             x_samples_cfg = self.decode_first_stage(samples_cfg)
             log[f"samples_cfg_scale_{unconditional_guidance_scale:.2f}"] = x_samples_cfg
 
+            
+        #print('*****sampling images,ddim_steps,scale,eta',ddim_steps,unconditional_guidance_scale,ddim_eta)
         return log
 
     @torch.no_grad()

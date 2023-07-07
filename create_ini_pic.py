@@ -73,19 +73,19 @@ def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resoluti
 
 
 
-input_dir = './sampling/dots2CNet/' # Replace this with your input images directory
+input_dir = './sampling/dots2CNet/id/' # Replace this with your input images directory
 output_dir = './sampling/dots2CNet/res/' # Replace this with your output images directory
 
 prompt = "fluo_ctc, cell, microscopy image, grayscale"  # Replace this with your prompt
 a_prompt =''
-n_prompt =''
+n_prompt = ''
 num_samples = 1
 image_resolution = 512
-ddim_steps = 100
+ddim_steps = 50
 guess_mode = False
 strength = 1.0
-scale = 4.0
-seed = 1554947169
+scale = 9.0
+seed = 1554547164
 eta = 0.0
 low_threshold = 100
 high_threshold = 200
@@ -100,7 +100,7 @@ for image_path in image_paths:
 
     
     output_img = Image.fromarray(result.astype('uint8'))  # Convert result to PIL Image
-    output_path = os.path.join(output_dir, os.path.splitext(os.path.basename(image_path))[0] + f'_output.png')
+    output_path = os.path.join(output_dir, os.path.splitext(os.path.basename(image_path))[0] + f'.png')
     print('saving', image_path, output_path )
     output_img.save(output_path)  # Save the image to the output directory
 

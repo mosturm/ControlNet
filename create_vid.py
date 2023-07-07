@@ -100,7 +100,7 @@ def make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples
     return img_number
 
 def make_vid(num, id_path, res_path, cond_path, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta):
-    resume_path = '/export/data/msturm/CNet_track/last.ckpt'
+    resume_path = '/export/data/msturm/CNet_track_2/last.ckpt'
 
 
     model = create_model('./models/cldm_v15.yaml').cpu()
@@ -108,7 +108,7 @@ def make_vid(num, id_path, res_path, cond_path, prompt, a_prompt, n_prompt, num_
     model = model.cuda()
     ddim_sampler = DDIMSampler(model)
 
-    for i in range(num, 1, -1):
+    for i in range(num, 0, -1):
 
         ctc_2_track(i, res_path, id_path, cond_path)
         image_paths = [os.path.join(cond_path, img) for img in os.listdir(cond_path) if img.endswith(".jpg")]
@@ -141,11 +141,11 @@ a_prompt =''
 n_prompt = ''
 num_samples = 1
 image_resolution = 512
-ddim_steps = 100
+ddim_steps = 50
 guess_mode = False
 strength = 1.0
-scale = 4.0
-seed = 1554547164
+scale = 9.0
+seed = 1554347564
 eta = 0.0
 low_threshold = 100
 high_threshold = 200
