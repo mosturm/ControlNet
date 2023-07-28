@@ -68,12 +68,16 @@ def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resoluti
 
 def make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, low_threshold, high_threshold):
     
-    resume_path = '/export/data/msturm/CNet/last.ckpt'
+    resume_path = '/export/data/msturm/CNet_deep/last.ckpt'
 
 
-    model = create_model('./models/cldm_v15.yaml').cpu()
+    device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
+    torch.cuda.set_device(device)
+
+
+    model = create_model('./models/cldm_v15.yaml').to(device)
     model.load_state_dict(load_state_dict(resume_path, location='cpu'))
-    model = model.cuda()
+    model = model.to(device)
     ddim_sampler = DDIMSampler(model)
     
     
@@ -100,12 +104,14 @@ def make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples
     return img_number
 
 def make_vid(num, id_path, res_path, cond_path, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta):
-    resume_path = '/export/data/msturm/CNet_track_2/last.ckpt'
+    resume_path = '/export/data/msturm/CNet_deep_track/last.ckpt'
 
+    device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
+    torch.cuda.set_device(device)
 
-    model = create_model('./models/cldm_v15.yaml').cpu()
+    model = create_model('./models/cldm_v15.yaml').to(device)
     model.load_state_dict(load_state_dict(resume_path, location='cpu'))
-    model = model.cuda()
+    model = model.to(device)
     ddim_sampler = DDIMSampler(model)
 
     for i in range(num, 0, -1):
@@ -136,7 +142,7 @@ def make_vid(num, id_path, res_path, cond_path, prompt, a_prompt, n_prompt, num_
 input_dir = './sampling/dots2CNet/id/' # Replace this with your input images directory
 output_dir = './sampling/dots2CNet/res_track/' # Replace this with your output images directory
 
-prompt = "fluo_ctc, cell, microscopy image, grayscale"  # Replace this with your prompt
+prompt = "nuc_deep, cell, microscopy image, grayscale"  # Replace this with your prompt
 a_prompt =''
 n_prompt = ''
 num_samples = 1
@@ -154,7 +160,7 @@ high_threshold = 200
 num = make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, low_threshold, high_threshold)
 
 
-prompt = "fluo_ctc, cell, tracking, microscopy image, grayscale"  # Replace this with your prompt
+prompt ="nuc_deep, tracking, cell, microscopy image, grayscale"  # Replace this with your prompt
 
 id_path = './sampling/dots2CNet/id_track/'
 res_path = './sampling/dots2CNet/res_track/'

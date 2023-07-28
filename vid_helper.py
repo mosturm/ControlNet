@@ -176,7 +176,7 @@ def connect_matching_coords(img1, img2, path, t, cells, test=False):
             coord1 = tuple(map(int, coordinates_img1))
             coord2 = tuple(map(int, coordinates_img2))
             print('working...',coord1,coord2,value)
-            cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[0, 255, 0], thickness=3)
+            cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
             cv2.circle(output_img_lines, tuple(coord2[::-1]), 8, color=[0, 255, 0], thickness=-1)  # Filled circle
 
         
@@ -188,7 +188,7 @@ def connect_matching_coords(img1, img2, path, t, cells, test=False):
                 coord1 = tuple(map(int, coordinates_img1))
                 coord2 = tuple(map(int, coordinates_img2))
                     
-                cv2.line(output_img_splits, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[255, 0, 0], thickness=3)
+                cv2.line(output_img_splits, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[200, 55, 0], thickness=3)
                 cv2.circle(output_img_splits, tuple(coord2[::-1]), 8, color=[255, 0, 0], thickness=-1)  # Filled circle
 
        

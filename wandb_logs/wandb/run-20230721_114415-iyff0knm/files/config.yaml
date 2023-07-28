@@ -1,0 +1,98 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    python_version: 3.8.10
+    cli_version: 0.15.4
+    framework: huggingface
+    huggingface_version: 4.19.2
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1689932655.717535
+    t:
+      1:
+      - 1
+      - 9
+      - 11
+      - 41
+      - 49
+      - 55
+      - 63
+      2:
+      - 1
+      - 9
+      - 11
+      - 41
+      - 49
+      - 55
+      - 63
+      3:
+      - 7
+      - 13
+      - 23
+      4: 3.8.10
+      5: 0.15.4
+      6: 4.19.2
+      8:
+      - 5
+    m:
+    - 1: trainer/global_step
+      6:
+      - 3
+    - 1: train/loss_simple_step
+      5: 1
+      6:
+      - 1
+    - 1: train/loss_vlb_step
+      5: 1
+      6:
+      - 1
+    - 1: train/loss_step
+      5: 1
+      6:
+      - 1
+    - 1: global_step
+      5: 1
+      6:
+      - 1
+    - 1: epoch
+      5: 1
+      6:
+      - 1
+    - 1: val/loss_simple
+      5: 1
+      6:
+      - 1
+    - 1: val/loss_vlb
+      5: 1
+      6:
+      - 1
+    - 1: val/loss
+      5: 1
+      6:
+      - 1
+    - 1: val/loss_simple_ema
+      5: 1
+      6:
+      - 1
+    - 1: val/loss_vlb_ema
+      5: 1
+      6:
+      - 1
+    - 1: val/loss_ema
+      5: 1
+      6:
+      - 1
+    - 1: train/loss_simple_epoch
+      5: 1
+      6:
+      - 1
+    - 1: train/loss_vlb_epoch
+      5: 1
+      6:
+      - 1
+    - 1: train/loss_epoch
+      5: 1
+      6:
+      - 1

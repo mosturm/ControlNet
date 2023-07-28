@@ -8,27 +8,37 @@ from cldm.logger import ImageLogger
 from cldm.model import create_model, load_state_dict
 from pytorch_lightning.loggers import WandbLogger
 
-#latest_checkpoint = ModelCheckpoint(
-#    dirpath='/export/data/msturm/CNet_track_2',
-#    save_weights_only=True,  # default is False, change to True if you only want to save model weights
-#    verbose=True,
-#    save_last=True,  # if you want to ensure that the last model is always saved
-#)
+from pytorch_lightning.callbacks.base import Callback
+import subprocess
+
+ckpt_save_path = '/export/data/msturm/CNet_deep'
+gpu=7
+
+class ExternalScriptCallback(Callback):
+    def on_epoch_end(self, trainer, pl_module):
+        epoch = trainer.current_epoch
+        subprocess.call(["python", "val_sampling.py", "--ckpt_path", ckpt_save_path + '/last.ckpt', "--prompt", '', "--epoch", str(epoch),"--gpu",str(gpu)])
 
 
 
 # Define a ModelCheckpoint callback.
 checkpoint_callback = ModelCheckpoint(
-    dirpath='/export/data/msturm/CNet_track_2',
+    dirpath=ckpt_save_path,
     save_weights_only=True,  # default is False, change to True if you only want to save model weights
     verbose=True,
     save_last=True,  # if you want to ensure that the last model is always saved
 )
 
+
+logger_freq = 300
+logger = ImageLogger(batch_frequency=logger_freq)
+callbacks = [logger, checkpoint_callback, ExternalScriptCallback()]
+
+
 def main():
     # Configs
-    resume_path = '/export/data/msturm/CNet_track_2/last.ckpt' #'./models/control_sd15_ini.ckpt'
-    logger_freq = 300
+    resume_path = './models/control_sd15_cell.ckpt'#/export/data/msturm/CNet_deep/last.ckpt' #'/export/data/msturm/CNet_deep_track/last.ckpt'  
+
     learning_rate = 2e-6
     sd_locked = False
     only_mid_control = False
@@ -45,11 +55,11 @@ def main():
     # Misc
     #dataset = MyDataset('CNet_cells_track')
     #dataloader = DataLoader(dataset, num_workers=0, batch_size=batch_size, shuffle=True)
-    logger = ImageLogger(batch_frequency=logger_freq)
+    
     trainer = pl.Trainer(
-    gpus=[1], 
+    gpus=[gpu], 
     precision=32, 
-    callbacks=[logger, checkpoint_callback],
+    callbacks=callbacks,
     min_steps=150000, 
     min_epochs=0,
     logger=wandb_logger )# Set Weights & Biases logger here

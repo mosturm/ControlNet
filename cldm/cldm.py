@@ -441,10 +441,10 @@ class ControlLDM(LatentDiffusion):
 
 
     def train_dataloader(self):
-        dataset = MyDataset('CNet_cells_track')  # Assume train argument specifies the split
+        dataset = MyDataset('CNet_deepcell')  # Assume train argument specifies the split
         return DataLoader(dataset, num_workers=0, batch_size=4, shuffle=True)
 
     def val_dataloader(self):
-        dataset = MyDataset_val('CNet_cells_track')  # Assume train argument specifies the split
+        dataset = MyDataset_val('CNet_deepcell')  # Assume train argument specifies the split
         return DataLoader(dataset, num_workers=0, batch_size=4, shuffle=True)
 

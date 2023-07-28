@@ -20,12 +20,19 @@ from cldm.ddim_hacked import DDIMSampler
 
 #apply_canny = CannyDetector()
 
-resume_path = '/export/data/msturm/CNet/last.ckpt'
+resume_path = '/export/data/msturm/CNet_2/last.ckpt'
 
 
-model = create_model('./models/cldm_v15.yaml').cpu()
+
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+torch.cuda.set_device(device)
+model = create_model('./models/cldm_v15.yaml').to(device)
 model.load_state_dict(load_state_dict(resume_path, location='cpu'))
-model = model.cuda()
+model = model.to(device)
+
+#model = create_model('./models/cldm_v15.yaml').cpu()
+#model.load_state_dict(load_state_dict(resume_path, location='cpu'))
+#model = model.cuda()
 ddim_sampler = DDIMSampler(model)
 
 
@@ -64,7 +71,7 @@ def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resoluti
 
         if config.save_memory:
             model.low_vram_shift(is_diffusing=False)
-
+        
         x_samples = model.decode_first_stage(samples)
         x_samples = (einops.rearrange(x_samples, 'b c h w -> b h w c') * 127.5 + 127.5).cpu().numpy().clip(0, 255).astype(np.uint8)
 
@@ -85,7 +92,7 @@ ddim_steps = 50
 guess_mode = False
 strength = 1.0
 scale = 9.0
-seed = 1554547164
+seed = 1454547764
 eta = 0.0
 low_threshold = 100
 high_threshold = 200
