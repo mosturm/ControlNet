@@ -12,12 +12,14 @@ from pytorch_lightning.callbacks.base import Callback
 import subprocess
 
 ckpt_save_path = '/export/data/msturm/CNet_deep'
-gpu=7
+gpu_train=0
+gpu_samp=3
+prompt='cell, microscopy, image'
 
 class ExternalScriptCallback(Callback):
     def on_epoch_end(self, trainer, pl_module):
         epoch = trainer.current_epoch
-        subprocess.call(["python", "val_sampling.py", "--ckpt_path", ckpt_save_path + '/last.ckpt', "--prompt", '', "--epoch", str(epoch),"--gpu",str(gpu)])
+        subprocess.call(["python", "val_sampling.py", "--ckpt_path", ckpt_save_path + '/last.ckpt', "--prompt", prompt, "--epoch", str(epoch),"--gpu",str(gpu_samp)])
 
 
 
@@ -26,7 +28,8 @@ checkpoint_callback = ModelCheckpoint(
     dirpath=ckpt_save_path,
     save_weights_only=True,  # default is False, change to True if you only want to save model weights
     verbose=True,
-    save_last=True,  # if you want to ensure that the last model is always saved
+    save_last=True
+    #every_n_epochs=1  # if you want to ensure that the last model is always saved
 )
 
 
@@ -39,7 +42,7 @@ def main():
     # Configs
     resume_path = './models/control_sd15_cell.ckpt'#/export/data/msturm/CNet_deep/last.ckpt' #'/export/data/msturm/CNet_deep_track/last.ckpt'  
 
-    learning_rate = 2e-6
+    learning_rate = 5e-6
     sd_locked = False
     only_mid_control = False
 
@@ -57,7 +60,7 @@ def main():
     #dataloader = DataLoader(dataset, num_workers=0, batch_size=batch_size, shuffle=True)
     
     trainer = pl.Trainer(
-    gpus=[gpu], 
+    gpus=[gpu_train], 
     precision=32, 
     callbacks=callbacks,
     min_steps=150000, 

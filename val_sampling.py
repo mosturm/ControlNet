@@ -35,11 +35,15 @@ gpu=args.gpu
 device =torch.device(f"cuda:{gpu}" if torch.cuda.is_available() else "cpu") #torch.device("cpu") #torch.device(f"cuda:{gpu}" if torch.cuda.is_available() else "cpu")
 torch.cuda.set_device(device)
 model = create_model('./models/cldm_v15.yaml').to(device)
-model.load_state_dict(load_state_dict(ckpt_path, location='cpu'))
+if os.path.exists(ckpt_path):
+    model.load_state_dict(load_state_dict(ckpt_path, location='cpu'))
+else:
+    print(f"Checkpoint file not found at {ckpt_path}. Loading default checkpoint.")
+    model.load_state_dict(load_state_dict('./models/control_sd15_cell.ckpt', location='cpu'))
 model = model.to(device)
 ddim_sampler = DDIMSampler(model)
-torch.no_grad()
-torch.cuda.empty_cache()
+#torch.no_grad()
+#torch.cuda.empty_cache()
 
 
 def make_val_pic(prompt,epoch):
@@ -54,13 +58,13 @@ def make_val_pic(prompt,epoch):
     guess_mode = False
     strength = 1.0
     scale = 9.0
-    seed = 1454547764
+    seed = -1 #1454547764
     eta = 0.0
     low_threshold = 100
     high_threshold = 200
 
     # Load all JPG images from the input directory
-    image_paths = [os.path.join(input_dir, img) for img in os.listdir(input_dir) if img.endswith(".jpg")]
+    image_paths = [os.path.join(input_dir, img) for img in os.listdir(input_dir) if img.endswith(".png")]
 
     for image_path in image_paths:
         input_image = np.array(Image.open(image_path))  # Read image using Pillow
@@ -70,7 +74,7 @@ def make_val_pic(prompt,epoch):
         
         output_img = Image.fromarray(result.astype('uint8'))  # Convert result to PIL Image
         output_path = os.path.join(output_dir, os.path.splitext(os.path.basename(image_path))[0] + f'.png')
-        #print('saving', image_path, output_path )
+        print('saving', image_path, output_path )
         output_img.save(output_path)  # Save the image to the output directory
 
 
