@@ -1,0 +1,7 @@
+{   
+    "name": "HeLa_track_256_256",
+    "resume_path": "/export/data/msturm/HeLa_256_256/last.ckpt",
+    "ckpt_save_path": "/export/data/msturm/HeLa_track_256_256",
+    "gpu_train": 5,
+    "gpu_samp": 6
+}

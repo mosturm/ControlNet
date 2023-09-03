@@ -6,6 +6,9 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from tutorial_dataset import MyDataset, MyDataset_val
 
+from config_loader import load_config
+import os
+
 from ldm.modules.diffusionmodules.util import (
     conv_nd,
     linear,
@@ -20,6 +23,7 @@ from ldm.modules.diffusionmodules.openaimodel import UNetModel, TimestepEmbedSeq
 from ldm.models.diffusion.ddpm import LatentDiffusion
 from ldm.util import log_txt_as_img, exists, instantiate_from_config
 from ldm.models.diffusion.ddim import DDIMSampler
+from config_loader import load_config
 
 
 class ControlledUnetModel(UNetModel):
@@ -440,11 +444,25 @@ class ControlLDM(LatentDiffusion):
             self.cond_stage_model = self.cond_stage_model.cuda()
 
 
+   
+
     def train_dataloader(self):
-        dataset = MyDataset('CNet_deepcell')  # Assume train argument specifies the split
+        conf_p = os.environ.get('CONFIG_PATH')
+        conf = load_config(conf_p)
+        name = conf["name"]
+        parts = name.split("_")
+        parts.insert(1, "train")
+        path_train= "_".join(parts)
+        dataset = MyDataset(path_train)  # Assume train argument specifies the split
         return DataLoader(dataset, num_workers=0, batch_size=4, shuffle=True)
 
     def val_dataloader(self):
-        dataset = MyDataset_val('CNet_deepcell')  # Assume train argument specifies the split
+        conf_p = os.environ.get('CONFIG_PATH')
+        conf = load_config(conf_p)
+        name = conf["name"]
+        parts = name.split("_")
+        parts.insert(1, "test")
+        path_val= "_".join(parts)
+        dataset = MyDataset_val(path_val)  # Assume train argument specifies the split
         return DataLoader(dataset, num_workers=0, batch_size=4, shuffle=True)
 

@@ -17,6 +17,7 @@ from annotator.canny import CannyDetector
 from cldm.model import create_model, load_state_dict
 from cldm.ddim_hacked import DDIMSampler
 from vid_helper import ctc_2_track
+from config_loader import load_config
 
 
 parser = argparse.ArgumentParser()
@@ -26,6 +27,10 @@ parser.add_argument("--epoch", type=int, required=True, help="Current epoch numb
 parser.add_argument("--gpu", type=int, required=True, help="gpu")
 args = parser.parse_args()
 
+
+conf_p = os.environ.get('CONFIG_PATH')
+conf = load_config(conf_p)
+name = conf["name"]
 
 ckpt_path = args.ckpt_path
 prompt = args.prompt
@@ -45,10 +50,9 @@ ddim_sampler = DDIMSampler(model)
 #torch.no_grad()
 #torch.cuda.empty_cache()
 
-
 def make_val_pic(prompt,epoch):
-    input_dir = './sampling/val/id/' # Replace this with your input images directory
-    output_dir = f'./sampling/val/{epoch}'  # Output directory now contains the epoch number
+    input_dir = f'./sampling/val/id/{name}' # Replace this with your input images directory
+    output_dir = f'./sampling/val/{name}/{epoch}'  # Output directory now contains the epoch number
     os.makedirs(output_dir, exist_ok=True)
     a_prompt =''
     n_prompt = ''
@@ -63,9 +67,12 @@ def make_val_pic(prompt,epoch):
     low_threshold = 100
     high_threshold = 200
 
+
+    print('input_dir!!!!',input_dir,os.listdir(input_dir))
+
     # Load all JPG images from the input directory
     image_paths = [os.path.join(input_dir, img) for img in os.listdir(input_dir) if img.endswith(".png")]
-
+    print('imagepath!!!!',image_paths)
     for image_path in image_paths:
         input_image = np.array(Image.open(image_path))  # Read image using Pillow
 

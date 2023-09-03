@@ -131,6 +131,7 @@ def connect_matching_coords(img1, img2, path, t, cells, test=False):
     xl,yl,rl,idel,split_l,s_pr_l,t_vl= np.loadtxt(path+'pos_GT.txt',skiprows=1, delimiter='\t', usecols=(0,1,2,3,4,5,6), unpack=True)
     y0 = xl[t_vl==t]
     y1 = xl[t_vl==(t-1)]
+    rl=rl[t_vl==(t-1)]
 
     x0 = 1-yl[t_vl==t]
     x1 = 1-yl[t_vl==(t-1)]
@@ -171,29 +172,136 @@ def connect_matching_coords(img1, img2, path, t, cells, test=False):
         # Find the coordinates of matching dots in both images
         coordinates_img1 = (x0[id0==value][0]*512,y0[id0==value][0]*512)
         try:
-            
+            r=rl[id1==value]*512
+            r = 12#int(map_value_linear(np.pi*(r**2), 10, 1500, 2, 8))
             coordinates_img2 = (x1[id1==value][0]*512,y1[id1==value][0]*512)
             coord1 = tuple(map(int, coordinates_img1))
             coord2 = tuple(map(int, coordinates_img2))
+            flag=check_split_timeframe(t, value, t_vl, idel, split_l)
             print('working...',coord1,coord2,value)
-            cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
-            cv2.circle(output_img_lines, tuple(coord2[::-1]), 8, color=[0, 255, 0], thickness=-1)  # Filled circle
 
-        
+            if flag==0:
+                cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
+                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[0, 255, 0], thickness=-1) # Filled circle
+            elif flag==1:
+                cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
+                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[255, 255, 0], thickness=-1) # Filled circle
+            elif flag==2:
+                #print('flag2',t,frame)
+                cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
+                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[170, 255, 0], thickness=-1) # Filled
+            elif flag==3:
+                #print('flag2',t,frame)
+                cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
+                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[85, 255, 0], thickness=-1) # Filled 
+            elif flag==-1:
+                #print('flag2',t,frame)
+                cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
+                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[255, 85, 0], thickness=-1) # Filled 
+                
+            elif flag==-2:
+                #print('flag2',t,frame)
+                cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
+                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[255, 170, 0], thickness=-1) # Filled
+                
+            elif flag==-3:
+                #print('flag2',t,frame)
+                cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
+                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[255, 170, 0], thickness=-1) # Filled 
+                
+            #cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
+            #cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[0, 255, 0], thickness=-1)  # Filled circle
+
+       
         except:
             cs = check_split(path, t, value)
             print('cs', cs)
             if cs[0]:
+                r=rl[id1==cs[1]]*512
+                r = 12#int(map_value_linear(np.pi*(r**2), 10, 1500, 2, 8))
                 coordinates_img2 = (x1[id1==cs[1]][0]*512,y1[id1==cs[1]][0]*512)
                 coord1 = tuple(map(int, coordinates_img1))
                 coord2 = tuple(map(int, coordinates_img2))
                     
                 cv2.line(output_img_splits, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[200, 55, 0], thickness=3)
-                cv2.circle(output_img_splits, tuple(coord2[::-1]), 8, color=[255, 0, 0], thickness=-1)  # Filled circle
+                cv2.circle(output_img_splits, tuple(coord2[::-1]), r, color=[255, 0, 0], thickness=-1)  # Filled circle
 
        
 
     # Stack images along the channel dimension: Red for splits, Green for lines, Blue for dots
     output_img = output_img_dots + output_img_lines + output_img_splits
     return output_img
+
+
+
+
+def map_value_linear(value, in_min, in_max, out_min, out_max):
+    # Ensure the input value is within the input range
+    value = max(min(value, in_max), in_min)
+    
+    if value==in_min:
+        return 1
+    elif value== in_max:
+        return 8
+
+    # Map the value to the output range using linear interpolation
+    return int((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
+
+
+
+'''
+
+def check_split_timeframe(t, cell_id, t_vl, idel, split_l):
+    
+    # Search for the cell with the given cell_id
+    indices = np.where(idel == cell_id)[0]  # Find all indices where idel matches cell_id
+    
+    for index in indices:
+        if split_l[index] != 0.0:  # If the cell has a split_id
+            split_time = t_vl[index]  # Extract the time of splitting
+            time_difference = t - split_time
+            
+            if time_difference == 1:
+                return 1
+            elif time_difference == 2:
+                return 2
+                
+    # If neither condition is met, return flag=0
+    return 0
+
+'''
+
+def check_split_timeframe(t, cell_id, t_vl, idel, split_l):
+    # Search for the cell with the given cell_id
+    indices = np.where(idel == cell_id)[0]  # Find all indices where idel matches cell_id
+    
+    for index in indices:
+        if split_l[index] != 0.0:  # If the cell has a split_id
+            split_time = t_vl[index]  # Extract the time of splitting
+            time_difference = t - split_time
+            
+            # Check splitting timeframes
+            if time_difference == 1:
+                return -1
+            elif time_difference == 2:
+                return -2
+            elif time_difference == 3:
+                return -3
+    
+    # Check for merges
+    child_indices = np.where(split_l == cell_id)[0]  # Find all indices where the cell is a parent
+    for index in child_indices:
+        merge_time = t_vl[index]  # Extract the time of merging
+        time_difference = merge_time - t
+        
+        # Check merging timeframes
+        if time_difference == 1:
+            return 1
+        elif time_difference == 2:
+            return 2
+        elif time_difference == 3:
+            return 3
+                
+    # If neither condition is met, return flag=0
+    return 0
 

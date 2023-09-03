@@ -10,13 +10,20 @@ from pytorch_lightning.loggers import WandbLogger
 
 from pytorch_lightning.callbacks.base import Callback
 import subprocess
-from setup import conf_p
 from config_loader import load_config
+import os
 
 
-ckpt_save_path = '/export/data/msturm/CNet_deep_track'
-gpu_train=7
-gpu_samp=3
+conf_p = os.environ.get('CONFIG_PATH')
+#print(conf_p)
+conf = load_config(conf_p)
+resume_path = conf["resume_path"]
+ckpt_save_path = conf["ckpt_save_path"]
+gpu_train = conf["gpu_train"]
+gpu_samp = conf["gpu_samp"]
+#print('conf',conf)
+#print(stop)
+
 prompt='cell, microscopy, image'
 
 class ExternalScriptCallback(Callback):
@@ -40,12 +47,12 @@ checkpoint_callback = ModelCheckpoint(
 
 logger_freq = 300
 logger = ImageLogger(batch_frequency=logger_freq)
-callbacks =[logger, checkpoint_callback] #[logger, checkpoint_callback, ExternalScriptCallback()]
+callbacks =[logger, checkpoint_callback, ExternalScriptCallback()] #[logger, checkpoint_callback] #[logger, checkpoint_callback, ExternalScriptCallback()]
 
 
 def main():
     # Configs
-    resume_path = '/export/data/msturm/CNet_deep_track/last-epoch=42.ckpt' #./models/control_sd15_cell.ckpt'#/export/data/msturm/CNet_deep/last.ckpt' #'/export/data/msturm/CNet_deep_track/last.ckpt'  
+    #resume_path = '/export/data/msturm/CNet_deep_track/last-epoch=42.ckpt' #./models/control_sd15_cell.ckpt'#/export/data/msturm/CNet_deep/last.ckpt' #'/export/data/msturm/CNet_deep_track/last.ckpt'  
 
     learning_rate = 5e-6 #5e-6
     sd_locked = False

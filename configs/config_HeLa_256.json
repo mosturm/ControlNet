@@ -1,0 +1,7 @@
+{   
+    "name": "HeLa_256_256",
+    "resume_path": "./models/control_sd15_cell.ckpt",
+    "ckpt_save_path": "/export/data/msturm/HeLa_256_256",
+    "gpu_train": 5,
+    "gpu_samp": 6
+}

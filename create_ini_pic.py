@@ -20,7 +20,7 @@ from cldm.ddim_hacked import DDIMSampler
 
 #apply_canny = CannyDetector()
 
-resume_path = '/export/data/msturm/CNet_2/last.ckpt'
+resume_path =  '/export/data/msturm/CNet_deep/last.ckpt'
 
 
 
@@ -83,7 +83,7 @@ def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resoluti
 input_dir = './sampling/dots2CNet/id/' # Replace this with your input images directory
 output_dir = './sampling/dots2CNet/res/' # Replace this with your output images directory
 
-prompt = "fluo_ctc, cell, microscopy image, grayscale"  # Replace this with your prompt
+prompt = "cell, microscopy, image"  # Replace this with your prompt
 a_prompt =''
 n_prompt = ''
 num_samples = 1

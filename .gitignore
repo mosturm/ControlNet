@@ -143,3 +143,5 @@ dmypy.json
 .pyre/
 
 wandb_logs/
+*.png
+*.jpg

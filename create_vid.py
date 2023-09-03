@@ -68,7 +68,7 @@ def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resoluti
 
 def make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, low_threshold, high_threshold):
     
-    resume_path = '/export/data/msturm/CNet_deep/last.ckpt'
+    resume_path = '/export/data/msturm/HeLa_512_512/last.ckpt'
 
 
     device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
@@ -104,7 +104,7 @@ def make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples
     return img_number
 
 def make_vid(num, id_path, res_path, cond_path, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta):
-    resume_path = '/export/data/msturm/CNet_deep_track/last.ckpt'
+    resume_path = '/export/data/msturm/HeLa_track_512_512/last.ckpt'
 
     device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
     torch.cuda.set_device(device)
@@ -142,7 +142,7 @@ def make_vid(num, id_path, res_path, cond_path, prompt, a_prompt, n_prompt, num_
 input_dir = './sampling/dots2CNet/id/' # Replace this with your input images directory
 output_dir = './sampling/dots2CNet/res_track/' # Replace this with your output images directory
 
-prompt = "nuc_deep, cell, microscopy image, grayscale"  # Replace this with your prompt
+prompt = "cell, microscopy, image"  # Replace this with your prompt
 a_prompt =''
 n_prompt = ''
 num_samples = 1
@@ -151,7 +151,7 @@ ddim_steps = 50
 guess_mode = False
 strength = 1.0
 scale = 9.0
-seed = 1554347564
+seed = -1#1554647562
 eta = 0.0
 low_threshold = 100
 high_threshold = 200
@@ -160,7 +160,7 @@ high_threshold = 200
 num = make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, low_threshold, high_threshold)
 
 
-prompt ="nuc_deep, tracking, cell, microscopy image, grayscale"  # Replace this with your prompt
+prompt ="cell, microscopy, image"  # Replace this with your prompt
 
 id_path = './sampling/dots2CNet/id_track/'
 res_path = './sampling/dots2CNet/res_track/'
