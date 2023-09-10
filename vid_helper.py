@@ -197,17 +197,21 @@ def connect_matching_coords(img1, img2, path, t, cells, test=False):
             elif flag==-1:
                 #print('flag2',t,frame)
                 cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
-                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[255, 85, 0], thickness=-1) # Filled 
+                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[255, 50, 0], thickness=-1) # Filled 
                 
             elif flag==-2:
                 #print('flag2',t,frame)
                 cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
-                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[255, 170, 0], thickness=-1) # Filled
+                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[255, 100,0],thickness=-1) # Filled
                 
             elif flag==-3:
                 #print('flag2',t,frame)
                 cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
-                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[255, 170, 0], thickness=-1) # Filled 
+                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[255, 150, 0], thickness=-1) # Filled 
+            elif flag==-4:
+                #print('flag2',t,frame)
+                cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
+                cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[255, 200, 0], thickness=-1) # Filled 
                 
             #cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
             #cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[0, 255, 0], thickness=-1)  # Filled circle
@@ -287,6 +291,8 @@ def check_split_timeframe(t, cell_id, t_vl, idel, split_l):
                 return -2
             elif time_difference == 3:
                 return -3
+            elif time_difference == 4:
+                return -4
     
     # Check for merges
     child_indices = np.where(split_l == cell_id)[0]  # Find all indices where the cell is a parent

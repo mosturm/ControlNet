@@ -68,7 +68,7 @@ def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resoluti
 
 def make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, low_threshold, high_threshold):
     
-    resume_path = '/export/data/msturm/HeLa_512_512/last.ckpt'
+    resume_path = '/export/data/msturm/HeLa_512_512_new/last.ckpt'
 
 
     device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
@@ -104,7 +104,7 @@ def make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples
     return img_number
 
 def make_vid(num, id_path, res_path, cond_path, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta):
-    resume_path = '/export/data/msturm/HeLa_track_512_512/last.ckpt'
+    resume_path = '/export/data/msturm/HeLa_track_512_512_new/last.ckpt'
 
     device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
     torch.cuda.set_device(device)
@@ -151,7 +151,7 @@ ddim_steps = 50
 guess_mode = False
 strength = 1.0
 scale = 9.0
-seed = -1#1554647562
+seed = -1#1554647562#-1#
 eta = 0.0
 low_threshold = 100
 high_threshold = 200

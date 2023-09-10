@@ -20,11 +20,11 @@ from cldm.ddim_hacked import DDIMSampler
 
 #apply_canny = CannyDetector()
 
-resume_path =  '/export/data/msturm/CNet_deep/last.ckpt'
+resume_path =  '/export/data/msturm/HeLa_512_512_new/last.ckpt'
 
 
 
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
 torch.cuda.set_device(device)
 model = create_model('./models/cldm_v15.yaml').to(device)
 model.load_state_dict(load_state_dict(resume_path, location='cpu'))
