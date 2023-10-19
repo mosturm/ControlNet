@@ -1,7 +1,7 @@
 {   
     "name": "HeLa_256_256",
-    "resume_path": "/export/data/msturm/HeLa_256_256/last.ckpt",
-    "ckpt_save_path": "/export/data/msturm/HeLa_256_256_new",
+    "resume_path": "/export/home/msturm/ControlNet/models/control_sd15_cell.ckpt",
+    "ckpt_save_path": "/export/data/msturm/HeLa_256_256_LabSem",
     "gpu_train": 6,
     "gpu_samp": 7
 }

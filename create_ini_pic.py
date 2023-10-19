@@ -16,7 +16,7 @@ from annotator.util import resize_image, HWC3
 from annotator.canny import CannyDetector
 from cldm.model import create_model, load_state_dict
 from cldm.ddim_hacked import DDIMSampler
-
+from vid_helper import delete_files_in_folder
 
 #apply_canny = CannyDetector()
 
@@ -80,8 +80,8 @@ def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resoluti
 
 
 
-input_dir = './sampling/dots2CNet/id/' # Replace this with your input images directory
-output_dir = './sampling/dots2CNet/res/' # Replace this with your output images directory
+#input_dir = './sampling/dots2CNet/id/' # Replace this with your input images directory
+#output_dir = './sampling/dots2CNet/res/' # Replace this with your output images directory
 
 prompt = "cell, microscopy, image"  # Replace this with your prompt
 a_prompt =''
@@ -92,24 +92,36 @@ ddim_steps = 50
 guess_mode = False
 strength = 1.0
 scale = 9.0
-seed = 1454547764
+seed = -1#1454547764
 eta = 0.0
 low_threshold = 100
 high_threshold = 200
 
-# Load all JPG images from the input directory
-image_paths = [os.path.join(input_dir, img) for img in os.listdir(input_dir) if img.endswith(".jpg")]
 
-for image_path in image_paths:
-    input_image = np.array(Image.open(image_path))  # Read image using Pillow
+base_dir = './sampling/HeLa_art/'
 
-    result = process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, low_threshold, high_threshold)[1]
+# Step 1: Create a list of all folders that match the pattern of being a run
+run_folders = [f for f in os.listdir(base_dir) if not f.endswith('_GT')]
 
-    
-    output_img = Image.fromarray(result.astype('uint8'))  # Convert result to PIL Image
-    output_path = os.path.join(output_dir, os.path.splitext(os.path.basename(image_path))[0] + f'.png')
-    print('saving', image_path, output_path )
-    output_img.save(output_path)  # Save the image to the output directory
+for run in run_folders:
+    delete_files_in_folder(os.path.join(base_dir, run))
+    # Step 2: Derive the paths for the ground truth (`GT`) data based on the run folder name
+    input_dir = os.path.join(base_dir, f"{run}_GT/ID/")
+    output_dir = os.path.join(base_dir, run)
+
+    # Load all JPG images from the input directory
+    image_paths = [os.path.join(input_dir, img) for img in os.listdir(input_dir) if img.endswith(".jpg")]
+
+    for image_path in image_paths:
+        input_image = np.array(Image.open(image_path))  # Read image using Pillow
+
+        result = process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, low_threshold, high_threshold)[1]
+
+        
+        output_img = Image.fromarray(result.astype('uint8'))  # Convert result to PIL Image
+        output_path = os.path.join(output_dir, os.path.splitext(os.path.basename(image_path))[0] + f'.png')
+        print('saving', image_path, output_path )
+        output_img.save(output_path)  # Save the image to the output directory
 
 
 

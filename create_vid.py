@@ -16,7 +16,7 @@ from annotator.util import resize_image, HWC3
 from annotator.canny import CannyDetector
 from cldm.model import create_model, load_state_dict
 from cldm.ddim_hacked import DDIMSampler
-from vid_helper import ctc_2_track
+from vid_helper import ctc_2_track, delete_files_in_folder
 
 
 #apply_canny = CannyDetector()
@@ -68,10 +68,10 @@ def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resoluti
 
 def make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, low_threshold, high_threshold):
     
-    resume_path = '/export/data/msturm/HeLa_512_512_new/last.ckpt'
+    resume_path = '/export/data/msturm/HUH_1024/last.ckpt'
 
 
-    device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:6" if torch.cuda.is_available() else "cpu")
     torch.cuda.set_device(device)
 
 
@@ -104,9 +104,15 @@ def make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples
     return img_number
 
 def make_vid(num, id_path, res_path, cond_path, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta):
-    resume_path = '/export/data/msturm/HeLa_track_512_512_new/last.ckpt'
+    resume_path = '/export/data/msturm/HUH_track_1024/last.ckpt'#'/export/data/msturm/HeLa_track_512_512/last-epoch=56.ckpt'#
+    A=3496.6181161134623
+    pix=1024
 
-    device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
+    r_a=int(np.sqrt(A/ np.pi) / 4) if int(np.sqrt(A/ np.pi) / 4) > 2 else 2
+    f=((pix)/(512))
+    r_a = int(r_a /f)
+
+    device = torch.device("cuda:6" if torch.cuda.is_available() else "cpu")
     torch.cuda.set_device(device)
 
     model = create_model('./models/cldm_v15.yaml').to(device)
@@ -116,7 +122,7 @@ def make_vid(num, id_path, res_path, cond_path, prompt, a_prompt, n_prompt, num_
 
     for i in range(num, 0, -1):
 
-        ctc_2_track(i, res_path, id_path, cond_path)
+        ctc_2_track(i, res_path, id_path, cond_path,r_a)
         image_paths = [os.path.join(cond_path, img) for img in os.listdir(cond_path) if img.endswith(".jpg")]
 
         # Sort image paths based on the integer in the file name
@@ -136,7 +142,7 @@ def make_vid(num, id_path, res_path, cond_path, prompt, a_prompt, n_prompt, num_
         output_img.save(output_path)  # Save the image to the output directory
 
 
-
+'''
 
 
 input_dir = './sampling/dots2CNet/id/' # Replace this with your input images directory
@@ -169,3 +175,46 @@ cond_path = './sampling/dots2CNet/track_cond/'
 
 
 make_vid(num, id_path, res_path, cond_path, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta)
+'''
+
+prompt = "cell, microscopy, image"  # Replace this with your prompt
+a_prompt =''
+n_prompt = ''
+num_samples = 1
+image_resolution = 512
+ddim_steps = 50
+guess_mode = False
+strength = 1.0
+scale = 9.0
+seed = -1#1554647562#-1#
+eta = 0.0
+low_threshold = 100
+high_threshold = 200
+
+base_dir = './sampling/HUH/'
+
+# Step 1: Create a list of all folders that match the pattern of being a run
+run_folders = [f for f in os.listdir(base_dir) if not f.endswith('_GT')]
+
+for run in run_folders:
+    cond_dir = os.path.join(base_dir, f"{run}_GT/COND/")
+    if not os.path.exists(cond_dir):
+        os.makedirs(cond_dir)
+    delete_files_in_folder(os.path.join(base_dir, run))
+    delete_files_in_folder(os.path.join(base_dir, f"{run}_GT/COND/"))
+    # Step 2: Derive the paths for the ground truth (`GT`) data based on the run folder name
+    input_dir = os.path.join(base_dir, f"{run}_GT/ID/")
+    output_dir = os.path.join(base_dir, run)
+
+    # Call make_init_pic with the derived paths
+    num = make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, low_threshold, high_threshold)
+
+    # Paths for make_vid
+    id_path = os.path.join(base_dir, f"{run}_GT/TRA/")
+    res_path = os.path.join(base_dir, run)
+
+
+  
+
+    # Step 6: Call make_vid with the derived paths
+    make_vid(num, id_path, res_path, cond_dir, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta)

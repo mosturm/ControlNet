@@ -12,7 +12,7 @@ from pytorch_lightning.callbacks.base import Callback
 import subprocess
 from config_loader import load_config
 import os
-
+#os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:700"
 
 conf_p = os.environ.get('CONFIG_PATH')
 #print(conf_p)
@@ -21,6 +21,7 @@ resume_path = conf["resume_path"]
 ckpt_save_path = conf["ckpt_save_path"]
 gpu_train = conf["gpu_train"]
 gpu_samp = conf["gpu_samp"]
+name=conf["name"]
 #print('conf',conf)
 #print(stop)
 
@@ -47,7 +48,7 @@ checkpoint_callback = ModelCheckpoint(
 
 logger_freq = 300
 logger = ImageLogger(batch_frequency=logger_freq)
-callbacks =[logger, checkpoint_callback, ExternalScriptCallback()] #[logger, checkpoint_callback] #[logger, checkpoint_callback, ExternalScriptCallback()]
+callbacks =[logger, checkpoint_callback]#[logger, checkpoint_callback, ExternalScriptCallback()] # #[logger, checkpoint_callback, ExternalScriptCallback()]
 
 
 def main():
@@ -57,6 +58,7 @@ def main():
     learning_rate = 5e-6 #5e-6
     sd_locked = False
     only_mid_control = False
+
 
     wandb_logger = WandbLogger(name="ControlNet", project="CNet_cells_track",save_dir='./wandb_logs')
 
@@ -73,7 +75,7 @@ def main():
     
     trainer = pl.Trainer(
     gpus=[gpu_train], 
-    precision=32, 
+    precision=16, 
     callbacks=callbacks,
     min_steps=150000, 
     min_epochs=0,

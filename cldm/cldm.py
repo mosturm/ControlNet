@@ -450,19 +450,23 @@ class ControlLDM(LatentDiffusion):
         conf_p = os.environ.get('CONFIG_PATH')
         conf = load_config(conf_p)
         name = conf["name"]
+        #bs = conf["batch_size"]
+        bs=4
         parts = name.split("_")
         parts.insert(1, "train")
         path_train= "_".join(parts)
         dataset = MyDataset(path_train)  # Assume train argument specifies the split
-        return DataLoader(dataset, num_workers=0, batch_size=4, shuffle=True)
+        return DataLoader(dataset, num_workers=0, batch_size=bs, shuffle=True)
 
     def val_dataloader(self):
         conf_p = os.environ.get('CONFIG_PATH')
         conf = load_config(conf_p)
         name = conf["name"]
+        #bs = conf["batch_size"]
+        bs=4
         parts = name.split("_")
         parts.insert(1, "test")
         path_val= "_".join(parts)
         dataset = MyDataset_val(path_val)  # Assume train argument specifies the split
-        return DataLoader(dataset, num_workers=0, batch_size=4, shuffle=True)
+        return DataLoader(dataset, num_workers=0, batch_size=bs, shuffle=False)
 

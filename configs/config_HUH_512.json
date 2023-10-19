@@ -1,0 +1,7 @@
+{   
+    "name": "HUH_512_512",
+    "resume_path": "/export/data/msturm/HUH_512/last.ckpt",
+    "ckpt_save_path": "/export/data/msturm/HUH_512",
+    "gpu_train": 5,
+    "gpu_samp": 7
+}

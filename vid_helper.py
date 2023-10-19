@@ -3,7 +3,12 @@ import glob
 import cv2
 import numpy as np
 
-
+def delete_files_in_folder(directory):
+    """Delete all files in a specified directory."""
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
 
 def check_split(path,t,value):
     xl,yl,rl,idel,split_l,s_pr_l,t_vl= np.loadtxt(path+'pos_GT.txt',skiprows=1, delimiter='\t', usecols=(0,1,2,3,4,5,6), unpack=True)
@@ -80,7 +85,7 @@ def connect_matching_dots(img1, img2, path, t, cells, test=False):
 
 
 
-def ctc_2_track(i, res_path, id_path, save_path):
+def ctc_2_track(i, res_path, id_path, save_path,r_a):
      # File names
     x_img_path = os.path.join(res_path, f"{i}.png")
     #y_img_path = os.path.join(id_path, f"{i}.jpg")
@@ -97,7 +102,7 @@ def ctc_2_track(i, res_path, id_path, save_path):
 
     # Call connect_matching_dots function
      
-    out = connect_matching_coords(x_img, x_img, id_path, i, x_img)
+    out = connect_matching_coords(x_img, x_img, id_path, i, x_img,r_a)
 
     output_file = os.path.join(save_path, f"{i}.jpg")
     cv2.imwrite(output_file, out)
@@ -124,11 +129,24 @@ def revert_val_id(start,end,value,num):
 
 
 
-def connect_matching_coords(img1, img2, path, t, cells, test=False):
+def connect_matching_coords(img1, img2, path, t, cells, r_a,test=False):
 
 
 
     xl,yl,rl,idel,split_l,s_pr_l,t_vl= np.loadtxt(path+'pos_GT.txt',skiprows=1, delimiter='\t', usecols=(0,1,2,3,4,5,6), unpack=True)
+
+
+
+
+    mask = split_l != -1
+    xl = xl[mask]
+    yl = yl[mask]
+    rl = rl[mask]
+    idel = idel[mask]
+    split_l = split_l[mask]
+    s_pr_l = s_pr_l[mask]
+    t_vl = t_vl[mask]
+
     y0 = xl[t_vl==t]
     y1 = xl[t_vl==(t-1)]
     rl=rl[t_vl==(t-1)]
@@ -173,7 +191,7 @@ def connect_matching_coords(img1, img2, path, t, cells, test=False):
         coordinates_img1 = (x0[id0==value][0]*512,y0[id0==value][0]*512)
         try:
             r=rl[id1==value]*512
-            r = 12#int(map_value_linear(np.pi*(r**2), 10, 1500, 2, 8))
+            r = r_a#int(map_value_linear(np.pi*(r**2), 10, 1500, 2, 8))
             coordinates_img2 = (x1[id1==value][0]*512,y1[id1==value][0]*512)
             coord1 = tuple(map(int, coordinates_img1))
             coord2 = tuple(map(int, coordinates_img2))
@@ -222,7 +240,7 @@ def connect_matching_coords(img1, img2, path, t, cells, test=False):
             print('cs', cs)
             if cs[0]:
                 r=rl[id1==cs[1]]*512
-                r = 12#int(map_value_linear(np.pi*(r**2), 10, 1500, 2, 8))
+                r = r_a#int(map_value_linear(np.pi*(r**2), 10, 1500, 2, 8))
                 coordinates_img2 = (x1[id1==cs[1]][0]*512,y1[id1==cs[1]][0]*512)
                 coord1 = tuple(map(int, coordinates_img1))
                 coord2 = tuple(map(int, coordinates_img2))

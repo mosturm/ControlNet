@@ -7,6 +7,7 @@ from PIL import Image
 from pytorch_lightning.callbacks import Callback
 from pytorch_lightning.utilities.distributed import rank_zero_only
 
+from config_loader import load_config
 
 class ImageLogger(Callback):
     def __init__(self, batch_frequency=2000, max_images=4, clamp=True, increase_log_steps=True,
@@ -80,4 +81,7 @@ class ImageLogger(Callback):
 
     def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
         if not self.disabled:
-            self.log_img(pl_module, batch, batch_idx, split="val")
+            conf_p = os.environ.get('CONFIG_PATH')
+            conf = load_config(conf_p)
+            name = conf["name"]
+            self.log_img(pl_module, batch, batch_idx, split="val_"+name)
