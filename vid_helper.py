@@ -197,7 +197,13 @@ def connect_matching_coords(img1, img2, path, t, cells, r_a,test=False):
             coord2 = tuple(map(int, coordinates_img2))
             flag=check_split_timeframe(t, value, t_vl, idel, split_l)
             print('working...',coord1,coord2,value)
+            line_color = [55, 200, 0]
+            circle_color = get_gradient_color(4, flag)
 
+            cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=line_color, thickness=3)
+            circle_color = [int(val) for val in circle_color]
+            cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=circle_color, thickness=-1)
+            '''
             if flag==0:
                 cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
                 cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[0, 255, 0], thickness=-1) # Filled circle
@@ -233,7 +239,7 @@ def connect_matching_coords(img1, img2, path, t, cells, r_a,test=False):
                 
             #cv2.line(output_img_lines, tuple(coord1[::-1]), tuple(coord2[::-1]), color=[55, 200, 0], thickness=3)
             #cv2.circle(output_img_lines, tuple(coord2[::-1]), r, color=[0, 255, 0], thickness=-1)  # Filled circle
-
+            '''
        
         except:
             cs = check_split(path, t, value)
@@ -254,9 +260,24 @@ def connect_matching_coords(img1, img2, path, t, cells, r_a,test=False):
     output_img = output_img_dots + output_img_lines + output_img_splits
     return output_img
 
+def get_gradient_color(d, flag):
+    base_color = [0, 255, 0]  # Pure green as base color
 
+    if flag == 0:
+        return base_color
+    elif flag > 0:
+        return [255-((flag-1)*(255/(d-1))),255,0]
+    else:  # flag < 0
+        return [255,50+((abs(flag)-1)*(150/(d-1))),0]
 
+def get_color(flag, d):
+    gradient_color = get_gradient_color(d, flag)
 
+    # Handle the special case where flag is 99
+    if flag == 99:
+        gradient_color = [255, 0, 0]
+
+    return gradient_color  # Return the color as a list
 def map_value_linear(value, in_min, in_max, out_min, out_max):
     # Ensure the input value is within the input range
     value = max(min(value, in_max), in_min)

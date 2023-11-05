@@ -22,7 +22,8 @@ ckpt_save_path = conf["ckpt_save_path"]
 gpu_train = conf["gpu_train"]
 gpu_samp = conf["gpu_samp"]
 name=conf["name"]
-#print('conf',conf)
+m_ep=conf["max_epoch"]
+#print('m_ep',m_ep)
 #print(stop)
 
 prompt='cell, microscopy, image'
@@ -77,8 +78,7 @@ def main():
     gpus=[gpu_train], 
     precision=16, 
     callbacks=callbacks,
-    min_steps=150000, 
-    min_epochs=0,
+    max_epochs=m_ep,
     logger=wandb_logger )# Set Weights & Biases logger here
 #)#,accumulate_grad_batches=8)
 

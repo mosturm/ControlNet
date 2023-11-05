@@ -68,10 +68,10 @@ def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resoluti
 
 def make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, low_threshold, high_threshold):
     
-    resume_path = '/export/data/msturm/HUH_1024/last.ckpt'
+    resume_path = '/export/data/msturm/MSC_992/last.ckpt'
 
 
-    device = torch.device("cuda:6" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:4" if torch.cuda.is_available() else "cpu")
     torch.cuda.set_device(device)
 
 
@@ -104,15 +104,15 @@ def make_init_pic(input_dir, output_dir, prompt, a_prompt, n_prompt, num_samples
     return img_number
 
 def make_vid(num, id_path, res_path, cond_path, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta):
-    resume_path = '/export/data/msturm/HUH_track_1024/last.ckpt'#'/export/data/msturm/HeLa_track_512_512/last-epoch=56.ckpt'#
-    A=3496.6181161134623
-    pix=1024
+    resume_path = '/export/data/msturm/MSC_track_992/last.ckpt'#'/export/data/msturm/HeLa_track_512_512/last-epoch=56.ckpt'#
+    A=2267.068509598198
+    pix=992
 
     r_a=int(np.sqrt(A/ np.pi) / 4) if int(np.sqrt(A/ np.pi) / 4) > 2 else 2
     f=((pix)/(512))
     r_a = int(r_a /f)
 
-    device = torch.device("cuda:6" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:4" if torch.cuda.is_available() else "cpu")
     torch.cuda.set_device(device)
 
     model = create_model('./models/cldm_v15.yaml').to(device)
@@ -191,7 +191,7 @@ eta = 0.0
 low_threshold = 100
 high_threshold = 200
 
-base_dir = './sampling/HUH/'
+base_dir = './sampling/MSC2/'
 
 # Step 1: Create a list of all folders that match the pattern of being a run
 run_folders = [f for f in os.listdir(base_dir) if not f.endswith('_GT')]

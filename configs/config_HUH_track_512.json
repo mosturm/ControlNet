@@ -1,7 +1,9 @@
 {   
-    "name": "HUH_track_512_512",
-    "resume_path": "/export/data/msturm/HUH_512/last.ckpt",
-    "ckpt_save_path": "/export/data/msturm/HUH_track_512",
-    "gpu_train": 7,
-    "gpu_samp": 6
+    "name": "HUH2_track_512_512",
+    "resume_path": "/export/data/msturm/HUH2_512/last.ckpt",
+    "ckpt_save_path": "/export/data/msturm/HUH2_track_512",
+    "gpu_train": 5,
+    "gpu_samp": 6,
+    "max_epoch": 75
+
 }
